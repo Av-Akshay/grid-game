@@ -1,15 +1,26 @@
 import React from "react";
 import { GridSection } from "./components/index";
 import { useSelector } from "react-redux";
+import useGame from "./hooks/useGame";
 
 function App() {
   const { playerOneRandomCards, playerTwoRandomCards } = useSelector(
     (store) => store.gameReducer
   );
+  const {playGame,startGame} = useGame();
 
-  return (
+  if (!startGame){ return (
+<>
+<div className="h-screen flex items-center justify-center bg-slate-800 text-white">
+    <div className=" text-center">
+      <p className="text-2xl font-semibold capitalize ">click the start button to start the game</p>
+      <button className="font-semibold text-xl px-5 py-2 border-2 border-green-500 text-green-500 rounded-lg mt-5" onClick={()=>{playGame()}}> Start </button>
+    </div>
+</div>
+</>
+  )} else{ return (
     <>
-      <div className=" flex flex-col gap-5 py-5">
+      <div className=" flex flex-col gap-2 py-5 bg-slate-800 h-screen text-white">
         <div className=" flex items-center justify-between w-4/5 m-auto">
           <div>
             <h1> Player1 have {playerOneRandomCards.length} cards in hand</h1>
@@ -36,7 +47,8 @@ function App() {
         <GridSection />
       </div>
     </>
-  );
+  )
+}
 }
 
 export default App;

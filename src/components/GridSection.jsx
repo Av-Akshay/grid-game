@@ -15,7 +15,7 @@ const GridSection = () => {
         return (
           <div
             key={item}
-            className="h-16 w-full border border-black flex items-center justify-center"
+            className="h-16 w-full border border-white flex items-center justify-center"
             onClick={(e) => {
               inputHandler(e, item);
             }}
