@@ -12,7 +12,7 @@ import {
 
 const useGame = () => {
   let [user, setUser] = useState(1);
-  let [ startGame,setStartGame ] = useState(false);
+  let [startGame, setStartGame] = useState(false);
   const dispatch = useDispatch();
 
   const {
@@ -22,7 +22,6 @@ const useGame = () => {
     playerTwoRandomCards,
     gridArray,
   } = useSelector((store) => store.gameReducer);
-
 
   let playerOneTotalCards = playerOneCards.length - 1;
   let playerTwoTotalCards = playerTwoCards.length - 1;
@@ -49,50 +48,108 @@ const useGame = () => {
       dispatch(removePlayerTwoCard(playerTwoRandomCardIndex));
     }
   };
-  console.log(gridArray);
   const checkWinner = () => {
-
-  // horizontal Checking
+    // horizontal Checking
     let playerOneHorizontalSequence = 1;
     let playerTwoHorizontalSequence = 1;
 
-    // for (let index = 0; index < gridArray.length-1; index++) {
-    //       for (let j = 0; j < gridArray[index].length-1; j++) {
-    //         if(gridArray[index][j] === "one"){
-    //           if(gridArray[index][j]=== gridArray[index][j+1]){
-    //             playerOneSequence++;
-    //           }
-    //         }
-    //         if(gridArray[index][j] === "two"){
-    //           if(gridArray[index][j]=== gridArray[index][j+1]){
-    //             playerTwoSequence++;
-    //             console.log(playerTwoSequence);
-    //           }
-    //         }
-    //       }
-    // }
-
-// vertical Checking
-       for (let col = 0; col < gridArray.length; col++) {
-        for (let row = 0; row < gridArray.length; row++) {
-          if(gridArray[row][col]==="one"){
-            if(gridArray[row][col] === gridArray[row+1][col]){
-              playerOneSequence++;
-            }
+    for (let index = 0; index < gridArray.length - 1; index++) {
+      for (let j = 0; j < gridArray[index].length - 1; j++) {
+        if (gridArray[index][j] === "one") {
+          if (gridArray[index][j] === gridArray[index][j + 1]) {
+            playerOneHorizontalSequence++;
           }
-          if(gridArray[row][col]==="two"){
-            if(gridArray[row][col] === gridArray[row+1][col]){
-              playerTwoSequence++;
+        }
+        if (gridArray[index][j] === "two") {
+          if (gridArray[index][j] === gridArray[index][j + 1]) {
+            playerTwoHorizontalSequence++;
+          }
+        }
+      }
+    }
+
+    // vertical Checking
+    let playerOneVerticalSequence = 1;
+    let playerTwoVerticalSequence = 1;
+    for (let col = 0; col < gridArray.length; col++) {
+      for (let row = 0; row < gridArray.length; row++) {
+        if (gridArray[row][col] === "one") {
+          if (gridArray[row + 1]) {
+            if (gridArray[row][col] === gridArray[row + 1][col]) {
+              playerOneVerticalSequence++;
             }
           }
         }
-        
-       }
-
-    if(playerOneSequence >= 5){
-        alert('find a wining condition')
+        if (gridArray[row][col] === "two") {
+          if (gridArray[row + 1]) {
+            if (gridArray[row][col] === gridArray[row + 1][col]) {
+              playerTwoVerticalSequence++;
+            }
+          }
+        }
+      }
     }
 
+    // diagonally checking
+    let playerOneDiagonalSequence = 1;
+    let playerTwoDiagonalSequence = 1;
+    // console.log(playerTwoDiagonalSequence);
+    for (let row = 0; row < gridArray.length; row++) {
+      let col = row;
+      let diagonal = gridArray.length - 1;
+      if (gridArray[row][col] === "one") {
+        if (gridArray[row + 1]) {
+          if (gridArray[row][col] === gridArray[row + 1][col + 1]) {
+            playerOneDiagonalSequence++;
+          }
+        }
+      }
+      if (gridArray[row][col] === "two") {
+        if (gridArray[row][col] === gridArray[row + 1][col + 1]) {
+          playerTwoDiagonalSequence++;
+        }
+      }
+      if (gridArray[row][diagonal - col] === "one") {
+        if (gridArray[row + 1]) {
+          if (
+            gridArray[row][diagonal - col] ===
+            gridArray[row + 1][diagonal - col - 1]
+          ) {
+            playerOneDiagonalSequence++;
+          }
+        }
+      }
+      if (gridArray[row][diagonal - col] === "two") {
+        if (gridArray[row + 1]) {
+          if (
+            gridArray[row][diagonal - col] ===
+            gridArray[row + 1][diagonal - col - 1]
+          ) {
+            playerTwoDiagonalSequence++;
+          }
+        }
+      }
+    }
+
+    switch (true) {
+      case playerOneHorizontalSequence >= 5:
+        alert("this is wining condition");
+        break;
+      case playerTwoHorizontalSequence >= 5:
+        alert("this is wining condition");
+        break;
+      case playerOneVerticalSequence >= 5:
+        alert("this is wining condition");
+        break;
+      case playerTwoVerticalSequence >= 5:
+        alert("this is wining condition");
+        break;
+      case playerOneDiagonalSequence >= 5:
+        alert("this is wining condition");
+        break;
+      default:
+        break;
+    }
   };
 
   const inputHandler = (e, item) => {
@@ -100,7 +157,7 @@ const useGame = () => {
     let col = item % 10 === 0 ? 10 : item % 10;
     let player = user % 2 === 1 ? "one" : "two";
     dispatch(addValueOnGridArray({ row, col, player }));
-   
+
     if (user % 2 === 1) {
       if (playerOneRandomCards.length > 0) {
         e.target.innerHTML = `p1=>${playerOneRandomCards[0]}`;
@@ -127,16 +184,16 @@ const useGame = () => {
 
   const player = user % 2 ? "player1" : "player2";
 
-const playGame = ()=>{
-  generateRandomFiveCards();
-  setStartGame(true)
-}
+  const playGame = () => {
+    generateRandomFiveCards();
+    setStartGame(true);
+  };
 
   return {
     inputHandler,
     player,
     startGame,
-    playGame
+    playGame,
   };
 };
 
