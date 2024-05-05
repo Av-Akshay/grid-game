@@ -30,16 +30,13 @@ const useGame = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(winingCondition);
+    const elements = document.querySelectorAll(".box");
     switch (true) {
       case winingCondition["playerOneVerticalSequence"]:
-        console.log(winingCondition["playerOneVerticalSequence"]);
         dispatch(handelDeclareWinner("Player One"));
         break;
       case winingCondition["playerTwoVerticalSequence"]:
-        console.log("enter");
         dispatch(handelDeclareWinner("Player Two"));
-
         break;
       case winingCondition["playerOneHorizontalSequence"]:
         dispatch(handelDeclareWinner("Player One"));
@@ -95,10 +92,16 @@ const useGame = () => {
       dispatch(removePlayerTwoCard(playerTwoRandomCardIndex));
     }
   };
+
+  let playerOneHorizontalSequence = 1;
+  let playerTwoHorizontalSequence = 1;
+  let playerOneVerticalSequence = 1;
+  let playerTwoVerticalSequence = 1;
+  let playerOneDiagonalSequence = 1;
+  let playerTwoDiagonalSequence = 1;
+
   const checkWinner = () => {
     // horizontal Checking
-    let playerOneHorizontalSequence = 1;
-    let playerTwoHorizontalSequence = 1;
 
     for (let index = 0; index < gridArray.length - 1; index++) {
       for (let j = 0; j < gridArray[index].length - 1; j++) {
@@ -132,8 +135,6 @@ const useGame = () => {
     }
 
     // vertical Checking
-    let playerOneVerticalSequence = 1;
-    let playerTwoVerticalSequence = 1;
     for (let col = 0; col < gridArray.length; col++) {
       for (let row = 0; row < gridArray.length; row++) {
         if (gridArray[row][col] === "one") {
@@ -147,6 +148,7 @@ const useGame = () => {
               ...preVal,
               ["playerOneVerticalSequence"]: true,
             }));
+            playerOneVerticalSequence = 1;
           }
         }
 
@@ -169,9 +171,6 @@ const useGame = () => {
     }
 
     // diagonally checking
-    let playerOneDiagonalSequence = 1;
-    let playerTwoDiagonalSequence = 1;
-    // console.log(playerTwoDiagonalSequence);
     for (let row = 0; row < gridArray.length; row++) {
       let col = row;
       let diagonal = gridArray.length - 1;
@@ -263,9 +262,25 @@ const useGame = () => {
     generateRandomFiveCards();
     setStartGame(true);
   };
+
+  // useEffect(() => {
+  //   const element = document.querySelectorAll(".box");
+
+  //   element.forEach((item) => {
+  //     item.textContent = null;
+  //     console.log(item.textContent);
+  //   });
+  // }, [winingCondition]);
   const handelResetValues = () => {
+    playerOneHorizontalSequence = 1;
+    playerTwoHorizontalSequence = 1;
+    playerOneVerticalSequence = 1;
+    playerTwoVerticalSequence = 1;
+    playerOneDiagonalSequence = 1;
+    playerTwoDiagonalSequence = 1;
     setWiningCondition(initialState);
     dispatch(resetValue());
+    generateRandomFiveCards();
   };
 
   return {
