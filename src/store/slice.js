@@ -27,6 +27,8 @@ const gameSlice = createSlice({
     ],
     playerOneRandomCards: [],
     playerTwoRandomCards: [],
+    isPlayerWin: false,
+    winnerPlayer: null,
   },
   reducers: {
     removePlayerOneCard: (state, action) => {
@@ -54,6 +56,14 @@ const gameSlice = createSlice({
         state.gridArray[action.payload.row - 1][action.payload.col - 1] = "two";
       }
     },
+    handelDeclareWinner: (state, action) => {
+      state.isPlayerWin = true;
+      state.winnerPlayer = action.payload;
+    },
+    resetValue: (state, action) => {
+      state.isPlayerWin = false;
+      state.winnerPlayer = null;
+    },
   },
 });
 export default gameSlice;
@@ -65,4 +75,6 @@ export const {
   removePlayerOneRandomCards,
   removePlayerTwoRandomCards,
   addValueOnGridArray,
+  handelDeclareWinner,
+  resetValue,
 } = gameSlice.actions;

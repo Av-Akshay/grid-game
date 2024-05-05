@@ -10,7 +10,7 @@ const GridSection = () => {
   const { inputHandler } = useGame();
 
   return (
-    <div className="grid grid-cols-10 grid-rows-10 w-4/5 mx-auto my-5">
+    <div className="grid grid-cols-10 grid-rows-10 w-4/5 mx-auto my-5 z-10 cursor-pointer">
       {boxesArray.map((item) => {
         return (
           <div

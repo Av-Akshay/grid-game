@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
   removePlayerOneCard,
@@ -8,12 +8,59 @@ import {
   removePlayerOneRandomCards,
   removePlayerTwoRandomCards,
   addValueOnGridArray,
+  handelDeclareWinner,
+  resetValue,
 } from "../store/slice";
 
 const useGame = () => {
+  //initial value
+  let initialState = {
+    playerOneVerticalSequence: "",
+    playerTwoVerticalSequence: "",
+    playerOneHorizontalSequence: "",
+    playerTwoHorizontalSequence: "",
+    playerOneDiagonalSequence: "",
+    playerTwoDiagonalSequence: "",
+  };
+
+  //states
   let [user, setUser] = useState(1);
   let [startGame, setStartGame] = useState(false);
+  let [winingCondition, setWiningCondition] = useState(initialState);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    console.log(winingCondition);
+    switch (true) {
+      case winingCondition["playerOneVerticalSequence"]:
+        console.log(winingCondition["playerOneVerticalSequence"]);
+        dispatch(handelDeclareWinner("Player One"));
+        break;
+      case winingCondition["playerTwoVerticalSequence"]:
+        console.log("enter");
+        dispatch(handelDeclareWinner("Player Two"));
+
+        break;
+      case winingCondition["playerOneHorizontalSequence"]:
+        dispatch(handelDeclareWinner("Player One"));
+
+        break;
+      case winingCondition["playerTwoHorizontalSequence"]:
+        dispatch(handelDeclareWinner("Player Two"));
+
+        break;
+      case winingCondition["playerOneDiagonalSequence"]:
+        dispatch(handelDeclareWinner("Player One"));
+
+        break;
+      case winingCondition["playerTwoDiagonalSequence"]:
+        dispatch(handelDeclareWinner("Player Two"));
+
+        break;
+      default:
+        break;
+    }
+  }, [winingCondition]);
 
   const {
     playerOneCards,
@@ -56,13 +103,29 @@ const useGame = () => {
     for (let index = 0; index < gridArray.length - 1; index++) {
       for (let j = 0; j < gridArray[index].length - 1; j++) {
         if (gridArray[index][j] === "one") {
-          if (gridArray[index][j] === gridArray[index][j + 1]) {
-            playerOneHorizontalSequence++;
+          if (gridArray[index][j + 1]) {
+            if (gridArray[index][j] === gridArray[index][j + 1]) {
+              playerOneHorizontalSequence++;
+            }
+          }
+          if (playerOneHorizontalSequence === 5) {
+            setWiningCondition((preVal) => ({
+              ...preVal,
+              ["playerOneHorizontalSequence"]: true,
+            }));
           }
         }
         if (gridArray[index][j] === "two") {
-          if (gridArray[index][j] === gridArray[index][j + 1]) {
-            playerTwoHorizontalSequence++;
+          if (gridArray[index][j + 1]) {
+            if (gridArray[index][j] === gridArray[index][j + 1]) {
+              playerTwoHorizontalSequence++;
+            }
+          }
+          if (playerTwoHorizontalSequence === 5) {
+            setWiningCondition((preVal) => ({
+              ...preVal,
+              ["playerTwoHorizontalSequence"]: true,
+            }));
           }
         }
       }
@@ -79,15 +142,30 @@ const useGame = () => {
               playerOneVerticalSequence++;
             }
           }
+          if (playerOneVerticalSequence === 5) {
+            setWiningCondition((preVal) => ({
+              ...preVal,
+              ["playerOneVerticalSequence"]: true,
+            }));
+          }
         }
+
         if (gridArray[row][col] === "two") {
           if (gridArray[row + 1]) {
             if (gridArray[row][col] === gridArray[row + 1][col]) {
               playerTwoVerticalSequence++;
             }
           }
+          if (playerOneVerticalSequence === 5) {
+            setWiningCondition((preVal) => ({
+              ...preVal,
+              ["playerTwoVerticalSequence"]: true,
+            }));
+          }
         }
       }
+      playerOneVerticalSequence = 1;
+      playerTwoVerticalSequence = 1;
     }
 
     // diagonally checking
@@ -132,20 +210,17 @@ const useGame = () => {
     }
 
     switch (true) {
-      case playerOneHorizontalSequence >= 5:
-        alert("this is wining condition");
-        break;
-      case playerTwoHorizontalSequence >= 5:
-        alert("this is wining condition");
-        break;
-      case playerOneVerticalSequence >= 5:
-        alert("this is wining condition");
-        break;
-      case playerTwoVerticalSequence >= 5:
-        alert("this is wining condition");
-        break;
       case playerOneDiagonalSequence >= 5:
-        alert("this is wining condition");
+        setWiningCondition((preVal) => ({
+          ...preVal,
+          ["playerOneDiagonalSequence"]: true,
+        }));
+        break;
+      case playerTwoDiagonalSequence >= 5:
+        setWiningCondition((preVal) => ({
+          ...preVal,
+          ["playerTwoDiagonalSequence"]: true,
+        }));
         break;
       default:
         break;
@@ -188,8 +263,13 @@ const useGame = () => {
     generateRandomFiveCards();
     setStartGame(true);
   };
+  const handelResetValues = () => {
+    setWiningCondition(initialState);
+    dispatch(resetValue());
+  };
 
   return {
+    handelResetValues,
     inputHandler,
     player,
     startGame,
