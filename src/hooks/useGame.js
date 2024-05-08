@@ -33,25 +33,25 @@ const useGame = () => {
     const elements = document.querySelectorAll(".box");
     switch (true) {
       case winingCondition["playerOneVerticalSequence"]:
-        dispatch(handelDeclareWinner("Player One"));
+        dispatch(handelDeclareWinner("Player One in vertical sequence"));
         break;
       case winingCondition["playerTwoVerticalSequence"]:
-        dispatch(handelDeclareWinner("Player Two"));
+        dispatch(handelDeclareWinner("Player Two in vertical sequence"));
         break;
       case winingCondition["playerOneHorizontalSequence"]:
-        dispatch(handelDeclareWinner("Player One"));
+        dispatch(handelDeclareWinner("Player One in horizontal sequence"));
 
         break;
       case winingCondition["playerTwoHorizontalSequence"]:
-        dispatch(handelDeclareWinner("Player Two"));
+        dispatch(handelDeclareWinner("Player Two in horizontal sequence"));
 
         break;
       case winingCondition["playerOneDiagonalSequence"]:
-        dispatch(handelDeclareWinner("Player One"));
+        dispatch(handelDeclareWinner("Player One in diagonal sequence "));
 
         break;
       case winingCondition["playerTwoDiagonalSequence"]:
-        dispatch(handelDeclareWinner("Player Two"));
+        dispatch(handelDeclareWinner("Player Two in diagonal sequence"));
 
         break;
       default:
@@ -100,8 +100,10 @@ const useGame = () => {
   let playerOneDiagonalSequence = 1;
   let playerTwoDiagonalSequence = 1;
 
+  //check winner ===========================
+
   const checkWinner = () => {
-    // horizontal Checking
+    // horizontal Checking=======================
 
     for (let index = 0; index < gridArray.length - 1; index++) {
       for (let j = 0; j < gridArray[index].length - 1; j++) {
@@ -208,6 +210,23 @@ const useGame = () => {
       }
     }
 
+    if (
+      playerOneTotalCards === 2 &&
+      playerTwoRandomCards === 0 &&
+      playerTwoTotalCards === 2
+    ) {
+      alert(`Match is draw`);
+      playerOneHorizontalSequence = 1;
+      playerTwoHorizontalSequence = 1;
+      playerOneVerticalSequence = 1;
+      playerTwoVerticalSequence = 1;
+      playerOneDiagonalSequence = 1;
+      playerTwoDiagonalSequence = 1;
+      setWiningCondition(initialState);
+      dispatch(resetValue());
+      generateRandomFiveCards();
+    }
+
     switch (true) {
       case playerOneDiagonalSequence >= 5:
         setWiningCondition((preVal) => ({
@@ -233,14 +252,14 @@ const useGame = () => {
     dispatch(addValueOnGridArray({ row, col, player }));
 
     if (user % 2 === 1) {
-      if (playerOneRandomCards.length > 0) {
+      if (playerOneRandomCards.length > 0 && !e.target.innerHTML) {
         e.target.innerHTML = `p1=>${playerOneRandomCards[0]}`;
         dispatch(removePlayerOneRandomCards(0));
         setUser(user + 1);
       }
     }
     if (user % 2 === 0) {
-      if (playerTwoRandomCards.length > 0) {
+      if (playerTwoRandomCards.length > 0 && !e.target.innerHTML) {
         e.target.innerHTML = `p2=>${playerTwoRandomCards[0]}`;
         dispatch(removePlayerTwoRandomCards(0));
         setUser((preVal) => preVal + 1);
@@ -252,7 +271,6 @@ const useGame = () => {
     ) {
       generateRandomFiveCards();
     }
-
     checkWinner();
   };
 
@@ -263,14 +281,6 @@ const useGame = () => {
     setStartGame(true);
   };
 
-  // useEffect(() => {
-  //   const element = document.querySelectorAll(".box");
-
-  //   element.forEach((item) => {
-  //     item.textContent = null;
-  //     console.log(item.textContent);
-  //   });
-  // }, [winingCondition]);
   const handelResetValues = () => {
     playerOneHorizontalSequence = 1;
     playerTwoHorizontalSequence = 1;
